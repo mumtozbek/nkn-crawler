@@ -79,7 +79,6 @@ class SyncNeighbors extends Command
                     $this->syncNeighbors($addr);
 
                     unset($addr);
-                    unset($node);
                     unset($childNode);
                 }
             }

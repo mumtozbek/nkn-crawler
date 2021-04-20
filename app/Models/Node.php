@@ -43,12 +43,26 @@ class Node extends Model
     }
 
     /**
-     * Get the path of current node.
+     * Index a node.
      *
-     * @return string
+     * @param $json
      */
-    public function path()
+    public function index($json)
     {
-        return route('nodes.show', $this->id);
+        $result = $json->result;
+        $speed = ($result->relayMessageCount / $result->uptime) * 3600;
+
+        $this->update([
+            'status' => $result->syncState,
+            'version' => $result->version,
+            'height' => $result->height,
+            'proposals' => $result->proposalSubmitted,
+            'relays' => $result->relayMessageCount,
+            'uptime' => $result->uptime,
+            'speed' => $speed,
+            'response' => json_encode($result),
+        ]);
+
+        unset($result);
     }
 }
