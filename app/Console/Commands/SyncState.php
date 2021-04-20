@@ -38,7 +38,7 @@ class SyncState extends Command
      */
     public function handle()
     {
-        $nodes = Node::all();
+        $nodes = Node::whereNull('version')->get();
 
         foreach($nodes as $node) {
             $response = $this->getNodeState($node->host);
