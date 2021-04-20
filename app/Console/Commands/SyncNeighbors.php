@@ -51,8 +51,10 @@ class SyncNeighbors extends Command
     public function syncNeighbors($host)
     {
         $response = $this->getNeighbors($host);
+
         if (is_string($response)) {
             $json = json_decode($response);
+
             if (!empty($json->result)) {
                 foreach($json->result as $node) {
                     $addr = $this->extractHost($node->addr);
@@ -75,9 +77,17 @@ class SyncNeighbors extends Command
                     }
 
                     $this->syncNeighbors($addr);
+
+                    unset($addr);
+                    unset($node);
+                    unset($childNode);
                 }
             }
+
+            unset($json);
         }
+
+        unset($response);
     }
 
     private function getNeighbors($host)
