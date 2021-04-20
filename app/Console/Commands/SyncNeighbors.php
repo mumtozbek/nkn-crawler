@@ -38,11 +38,14 @@ class SyncNeighbors extends Command
      */
     public function handle()
     {
-        $nodes = Node::all();
+        $config = json_decode(file_get_contents(storage_path('config.mainnet.json')));
+        $seeds = $config->SeedList;
+        rsort($seeds);
 
-        $nodes->each(function ($node) {
-            $this->syncNeighbors($node->host);
-        });
+        foreach($seeds as $seed) {
+            $addr = $this->extractHost($seed);
+            $this->syncNeighbors($addr);
+        };
     }
 
     public function syncNeighbors($host)
@@ -52,7 +55,7 @@ class SyncNeighbors extends Command
             $json = json_decode($response);
             if (!empty($json->result)) {
                 foreach($json->result as $node) {
-                    $addr = trim(preg_replace('#^(\w+\:\/\/)(.*)(\:\d+)$#', '${2}', trim($node->addr)));
+                    $addr = $this->extractHost($node->addr);
 
                     $childNode = Node::whereHost($addr);
                     if (!$childNode->exists()) {
@@ -99,5 +102,10 @@ class SyncNeighbors extends Command
         );
 
         return curl_exec($ch);
+    }
+
+    private function extractHost($addr)
+    {
+        return trim(preg_replace('#^(\w+\:\/\/)(.*)(\:\d+)$#', '${2}', trim($addr)));
     }
 }
