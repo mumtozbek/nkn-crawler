@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\SyncLocation::class,
-        Commands\SyncNodes::class,
+        Commands\SyncNeighbors::class,
     ];
 
     /**
@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 //        $schedule->command('sync:location')->everyThirtyMinutes();
-        $schedule->command('sync:nodes')->everySixHours();
+        $schedule->command('sync:neighbors')->everySixHours();
     }
 
     /**

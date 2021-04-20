@@ -3,26 +3,23 @@
 namespace App\Console\Commands;
 
 use App\Models\Node;
-use App\UptimeRobot;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
-class SyncNodes extends Command
+class SyncNeighbors extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'sync:nodes';
+    protected $signature = 'sync:neighbors';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Sync nodes.';
+    protected $description = 'Sync neighbor nodes.';
 
     /**
      * Create a new command instance.
