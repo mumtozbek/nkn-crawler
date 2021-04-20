@@ -25,6 +25,7 @@ class Node extends Model
         'speed',
         'uptime',
         'round_trip_time',
+        'seed_id',
         'response',
     ];
 

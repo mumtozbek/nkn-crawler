@@ -60,6 +60,7 @@ class SyncNeighbors extends Command
                     $childNode = Node::whereHost($addr);
                     if (!$childNode->exists()) {
                         Node::create([
+                            'seed_id' => $node->id,
                             'host' => $addr,
                             'height' => $node->height,
                             'status' => $node->syncState,
