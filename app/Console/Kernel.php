@@ -27,8 +27,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 //        $schedule->command('sync:location')->everyThirtyMinutes();
+        $schedule->command('sync:neighbors')->everyTwoHours();
         $schedule->command('sync:state')->everyTwoHours();
-        $schedule->command('sync:neighbors')->everySixHours();
     }
 
     /**
