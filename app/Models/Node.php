@@ -50,6 +50,11 @@ class Node extends Model
     public function index($json)
     {
         $result = $json->result;
+
+        if (empty($result->uptime)) {
+             return false;
+        }
+
         $speed = ($result->relayMessageCount / $result->uptime) * 3600;
 
         $this->update([
