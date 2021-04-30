@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->command('sync:location')->everyThirtyMinutes()->withoutOverlapping(86400);
         $schedule->command('sync:neighbors')->everyMinute()->withoutOverlapping(86400);
-        $schedule->command('sync:state')->everyMinute()->withoutOverlapping(86400);
+        $schedule->command('sync:state')->everyThreeHours()->withoutOverlapping(86400);
     }
 
     /**
