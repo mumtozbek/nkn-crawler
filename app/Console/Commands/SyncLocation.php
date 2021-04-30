@@ -41,16 +41,20 @@ class SyncLocation extends Command
      */
     public function handle()
     {
-        $nodes = Node::whereNull('country')->orWhereNull('region')->orWhereNull('city')->get();
+        try {
+            $nodes = Node::whereNull('country')->orWhereNull('region')->orWhereNull('city')->get();
 
-        $nodes->each(function ($node) {
-            $response = Http::get('http://api.ipstack.com/' . $node->host . '?access_key=' . env('IPSTACK_ACCESS_KEY') . '&format=1');
+            $nodes->each(function ($node) {
+                $response = Http::get('http://api.ipstack.com/' . $node->host . '?access_key=' . env('IPSTACK_ACCESS_KEY') . '&format=1');
 
-            $node->update([
-                'country' => $response['country_name'],
-                'region' => $response['region_name'],
-                'city' => $response['city'],
-            ]);
-        });
+                $node->update([
+                    'country' => $response['country_name'],
+                    'region' => $response['region_name'],
+                    'city' => $response['city'],
+                ]);
+            });
+        } catch (\Exception $exception) {
+            Log::alert($exception->getMessage());
+        }
     }
 }

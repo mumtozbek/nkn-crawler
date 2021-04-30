@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Node;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class SyncNeighbors extends Command
 {
@@ -38,14 +39,18 @@ class SyncNeighbors extends Command
      */
     public function handle()
     {
-        $config = json_decode(file_get_contents(storage_path('config.mainnet.json')));
-        $seeds = $config->SeedList;
-        rsort($seeds);
+        try {
+            $config = json_decode(file_get_contents(storage_path('config.mainnet.json')));
+            $seeds = $config->SeedList;
+            rsort($seeds);
 
-        foreach($seeds as $seed) {
-            $addr = $this->extractHost($seed);
-            $this->syncNeighbors($addr);
-        };
+            foreach($seeds as $seed) {
+                $addr = $this->extractHost($seed);
+                $this->syncNeighbors($addr);
+            };
+        } catch (\Exception $exception) {
+            Log::alert($exception->getMessage());
+        }
     }
 
     public function syncNeighbors($host)

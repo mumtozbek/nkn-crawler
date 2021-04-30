@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Node;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class SyncState extends Command
 {
@@ -38,54 +39,58 @@ class SyncState extends Command
      */
     public function handle()
     {
-        $nodes = Node::all();
+        try {
+            $nodes = Node::all();
 
-        foreach($nodes as $node) {
-            $response = $this->getNodeState($node->host);
+            foreach($nodes as $node) {
+                $response = $this->getNodeState($node->host);
 
-            if (is_string($response)) {
-                $json = json_decode($response);
+                if (is_string($response)) {
+                    $json = json_decode($response);
 
-                if (!empty($json)) {
-                    if (!empty($json->result)) {
-                        $node->index($json);
+                    if (!empty($json)) {
+                        if (!empty($json->result)) {
+                            $node->index($json);
 
-                        continue;
-                    } elseif (!empty($json->error)) {
-                        if ($json->error->code == '-45022') {
-                            $status = 'GENERATE_ID';
-                        } elseif ($json->error->code == '-45024') {
-                            $status = 'PRUNING_DB';
-                        } else {
+                            continue;
+                        } elseif (!empty($json->error)) {
+                            if ($json->error->code == '-45022') {
+                                $status = 'GENERATE_ID';
+                            } elseif ($json->error->code == '-45024') {
+                                $status = 'PRUNING_DB';
+                            } else {
+                                continue;
+                            }
+
+                            $node->update([
+                                'status' => $status,
+                            ]);
+
+                            if ($status == $json->error->code) {
+                                $node->uptimes()->create([
+                                    'speed' => 0,
+                                ]);
+                            }
+
                             continue;
                         }
-
-                        $node->update([
-                            'status' => $status,
-                        ]);
-
-                        if ($status == $json->error->code) {
-                            $node->uptimes()->create([
-                                'speed' => 0,
-                            ]);
-                        }
-
-                        continue;
                     }
+
+                    unset($json);
                 }
 
-                unset($json);
+                // Connection failed, so log it
+                $node->update([
+                    'status' => 'OFFLINE',
+                ]);
+
+                unset($response);
             }
 
-            // Connection failed, so log it
-            $node->update([
-                'status' => 'OFFLINE',
-            ]);
-
-            unset($response);
+            unset($nodes);
+        } catch (\Exception $exception) {
+            Log::alert($exception->getMessage());
         }
-
-        unset($nodes);
     }
 
     private function getNodeState($host)
