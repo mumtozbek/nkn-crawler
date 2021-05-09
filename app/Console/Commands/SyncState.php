@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Node;
+use Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -40,7 +41,7 @@ class SyncState extends Command
     public function handle()
     {
         try {
-            $nodes = Node::all();
+            $nodes = Node::where('synced_at', '<', 'NOW() - 86400');
 
             foreach($nodes as $node) {
                 $response = $this->getNodeState($node->host);
@@ -64,6 +65,7 @@ class SyncState extends Command
 
                             $node->update([
                                 'status' => $status,
+                                'synced_at' => Carbon::now(),
                             ]);
 
                             if ($status == $json->error->code) {
@@ -82,6 +84,7 @@ class SyncState extends Command
                 // Connection failed, so log it
                 $node->update([
                     'status' => 'OFFLINE',
+                    'synced_at' => Carbon::now(),
                 ]);
 
                 unset($response);
