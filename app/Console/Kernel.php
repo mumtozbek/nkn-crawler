@@ -13,7 +13,6 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\SyncLocation::class,
         Commands\SyncNeighbors::class,
         Commands\SyncState::class,
     ];
@@ -26,7 +25,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command('sync:location')->everyThirtyMinutes()->withoutOverlapping(86400);
         $schedule->command('sync:neighbors')->everyMinute()->withoutOverlapping(86400);
         $schedule->command('sync:state')->everyMinute()->withoutOverlapping(86400);
     }
