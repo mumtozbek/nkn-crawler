@@ -31,6 +31,17 @@ class Node extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'synced_at' => 'datetime',
+    ];
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
