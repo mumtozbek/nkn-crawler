@@ -27,6 +27,7 @@ class Node extends Model
         'round_trip_time',
         'seed_id',
         'response',
+        'synced_at',
     ];
 
     /**
