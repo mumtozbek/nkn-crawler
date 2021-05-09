@@ -24,7 +24,7 @@ class Node extends Model
         'relays',
         'speed',
         'uptime',
-        'round_trip_time',
+        'ping',
         'seed_id',
         'response',
         'synced_at',

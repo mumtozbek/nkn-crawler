@@ -71,13 +71,13 @@ class SyncNeighbors extends Command
                             'host' => $addr,
                             'height' => $node->height,
                             'status' => $node->syncState,
-                            'round_trip_time' => $node->roundTripTime,
+                            'ping' => $node->roundTripTime,
                         ]);
-                    } elseif (empty($childNode->height) || empty($childNode->status) || empty($childNode->round_trip_time)) {
+                    } elseif (empty($childNode->height) || empty($childNode->status) || empty($childNode->ping)) {
                         $childNode->update([
                             'height' => $node->height,
                             'status' => $node->syncState,
-                            'round_trip_time' => $node->roundTripTime,
+                            'ping' => $node->roundTripTime,
                         ]);
                     }
 

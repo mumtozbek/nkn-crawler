@@ -26,7 +26,7 @@ class CreateNodesTable extends Migration
             $table->unsignedBigInteger('relays')->nullable();
             $table->unsignedFloat('speed', 16)->nullable();
             $table->unsignedBigInteger('uptime')->nullable();
-            $table->unsignedBigInteger('round_trip_time')->nullable();
+            $table->unsignedBigInteger('ping')->nullable();
             $table->text('response')->nullable();
             $table->timestamps();
         });

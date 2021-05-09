@@ -91,7 +91,7 @@ class NodesDataTable extends DataTable
             Column::make('uptime'),
             Column::make('proposals'),
             Column::make('speed'),
-            Column::make('round_trip_time'),
+            Column::make('ping'),
         ];
     }
 
