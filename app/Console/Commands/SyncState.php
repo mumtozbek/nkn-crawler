@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Node;
-use Carbon;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
