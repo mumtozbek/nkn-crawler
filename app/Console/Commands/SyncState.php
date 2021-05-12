@@ -41,7 +41,7 @@ class SyncState extends Command
     public function handle()
     {
         try {
-            $nodes = Node::where('synced_at', '<', 'NOW() - 86400');
+            $nodes = Node::where('synced_at', '<', 'NOW() - 86400')->limit(100)->get();
 
             foreach($nodes as $node) {
                 $response = $this->getNodeState($node->host);
