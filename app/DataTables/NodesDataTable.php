@@ -37,6 +37,8 @@ class NodesDataTable extends DataTable
                 }
 
                 return '<span class="badge badge-' . $class . '">' . $item->status . '</span>';
+            })->filterColumn('status', function ($query, $keyword) {
+                $query->where('nodes.status', 'LIKE', "%" . $keyword . "%");
             })->rawColumns(['status']);
     }
 
