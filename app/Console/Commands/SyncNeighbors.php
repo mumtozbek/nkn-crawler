@@ -55,6 +55,7 @@ class SyncNeighbors extends Command
 
     public function syncNeighbors($host)
     {
+        $count = 0;
         $response = $this->getNeighbors($host);
 
         if (is_string($response)) {
@@ -73,6 +74,8 @@ class SyncNeighbors extends Command
                             'status' => $node->syncState,
                             'ping' => $node->roundTripTime,
                         ]);
+
+                        $count++;
                     } elseif (empty($childNode->height) || empty($childNode->status) || empty($childNode->ping)) {
                         $childNode->update([
                             'height' => $node->height,
@@ -85,6 +88,10 @@ class SyncNeighbors extends Command
 
                     unset($addr);
                     unset($childNode);
+
+                    if ($count >= 100) {
+                        break;
+                    }
                 }
             }
 
