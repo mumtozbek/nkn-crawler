@@ -68,12 +68,6 @@ class SyncState extends Command
                                 'synced_at' => Carbon::now(),
                             ]);
 
-                            if ($status == $json->error->code) {
-                                $node->uptimes()->create([
-                                    'speed' => 0,
-                                ]);
-                            }
-
                             continue;
                         }
                     }

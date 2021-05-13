@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -78,6 +79,7 @@ class Node extends Model
             'uptime' => $result->uptime,
             'speed' => $speed,
             'response' => json_encode($result),
+            'synced_at' => Carbon::now(),
         ]);
 
         unset($result);
