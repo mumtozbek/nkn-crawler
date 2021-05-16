@@ -89,7 +89,7 @@ class SyncNeighbors extends Command
                     unset($addr);
                     unset($childNode);
 
-                    if ($count >= 100) {
+                    if ($count >= 30) {
                         break;
                     }
                 }

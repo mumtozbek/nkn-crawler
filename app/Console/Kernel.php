@@ -25,8 +25,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('sync:neighbors')->everyMinute()->withoutOverlapping(86400);
         $schedule->command('sync:state')->everyMinute()->withoutOverlapping(86400);
+        $schedule->command('sync:neighbors')->everyMinute()->withoutOverlapping(86400);
     }
 
     /**
