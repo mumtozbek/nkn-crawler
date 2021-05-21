@@ -70,6 +70,12 @@ class SyncState extends Command
 
                             continue;
                         }
+                    } else {
+                        $node->update([
+                            'speed' => 0,
+                            'status' => 'OFFLINE',
+                            'synced_at' => Carbon::now(),
+                        ]);
                     }
 
                     unset($json);
