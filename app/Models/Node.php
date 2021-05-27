@@ -70,7 +70,7 @@ class Node extends Model
 
         $speed = ($result->relayMessageCount / $result->uptime) * 3600;
 
-        if ($speed == 0) {
+        if (empty($speed)) {
             return false;
         }
 

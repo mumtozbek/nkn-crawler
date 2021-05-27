@@ -63,10 +63,6 @@ class SyncNeighbors extends Command
 
             if (!empty($json->result)) {
                 foreach ($json->result as $jsonNode) {
-                    if ($jsonNode->syncState != 'PERSIST_FINISHED') {
-                        continue;
-                    }
-
                     $addr = $this->extractHost($jsonNode->addr);
                     $childNode = Node::where('host', $addr);
 
