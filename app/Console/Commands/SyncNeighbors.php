@@ -44,7 +44,7 @@ class SyncNeighbors extends Command
             $seeds = $config->SeedList;
             rsort($seeds);
 
-            foreach($seeds as $seed) {
+            foreach ($seeds as $seed) {
                 $addr = $this->extractHost($seed);
                 $this->syncNeighbors($addr);
             };
@@ -55,33 +55,47 @@ class SyncNeighbors extends Command
 
     public function syncNeighbors($host)
     {
-        $count = 0;
+        $newNodes = 0;
         $response = $this->getNeighbors($host);
 
         if (is_string($response)) {
             $json = json_decode($response);
 
             if (!empty($json->result)) {
-                foreach($json->result as $node) {
-                    $addr = $this->extractHost($node->addr);
+                foreach ($json->result as $jsonNode) {
+                    if ($jsonNode->syncState != 'PERSIST_FINISHED') {
+                        continue;
+                    }
 
-                    $childNode = Node::whereHost($addr);
-                    if (!$childNode->exists()) {
-                        Node::create([
-                            'seed_id' => $node->id,
-                            'host' => $addr,
-                            'height' => $node->height,
-                            'status' => $node->syncState,
-                            'ping' => $node->roundTripTime,
-                        ]);
+                    $addr = $this->extractHost($jsonNode->addr);
+                    $childNode = Node::where('host', $addr);
 
-                        $count++;
-                    } elseif (empty($childNode->height) || empty($childNode->status) || empty($childNode->ping)) {
+                    if ($childNode->exists()) {
+                        if ($jsonNode->syncState != 'PERSIST_FINISHED') {
+                            $childNode->delete();
+
+                            continue;
+                        }
+
                         $childNode->update([
-                            'height' => $node->height,
-                            'status' => $node->syncState,
-                            'ping' => $node->roundTripTime,
+                            'height' => $jsonNode->height,
+                            'status' => $jsonNode->syncState,
+                            'ping' => $jsonNode->roundTripTime,
                         ]);
+                    } elseif (empty($childNode->height) || empty($childNode->status) || empty($childNode->ping)) {
+                        if ($jsonNode->syncState != 'PERSIST_FINISHED') {
+                            continue;
+                        }
+
+                        Node::create([
+                            'seed_id' => $jsonNode->id,
+                            'host' => $addr,
+                            'height' => $jsonNode->height,
+                            'status' => $jsonNode->syncState,
+                            'ping' => $jsonNode->roundTripTime,
+                        ]);
+
+                        $newNodes++;
                     }
 
                     $this->syncNeighbors($addr);
@@ -89,7 +103,7 @@ class SyncNeighbors extends Command
                     unset($addr);
                     unset($childNode);
 
-                    if ($count >= 30) {
+                    if ($newNodes >= 30) {
                         break;
                     }
                 }
