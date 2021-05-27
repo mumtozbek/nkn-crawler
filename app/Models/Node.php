@@ -70,6 +70,10 @@ class Node extends Model
 
         $speed = ($result->relayMessageCount / $result->uptime) * 3600;
 
+        if ($speed == 0) {
+            return false;
+        }
+
         $this->update([
             'status' => $result->syncState,
             'version' => $result->version,
