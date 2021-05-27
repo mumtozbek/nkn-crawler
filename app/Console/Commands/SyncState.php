@@ -43,7 +43,7 @@ class SyncState extends Command
         try {
             $nodes = Node::where('synced_at', '<', Carbon::now()->subHours(24))->limit(100)->get();
 
-            foreach($nodes as $node) {
+            foreach ($nodes as $node) {
                 $response = $this->getNodeState($node->host);
 
                 if (is_string($response)) {
@@ -55,37 +55,21 @@ class SyncState extends Command
 
                             continue;
                         } elseif (!empty($json->error)) {
-                            if ($json->error->code == '-45022') {
-                                $status = 'GENERATE_ID';
-                            } elseif ($json->error->code == '-45024') {
-                                $status = 'PRUNING_DB';
-                            } else {
-                                continue;
-                            }
-
-                            $node->update([
-                                'status' => $status,
-                                'synced_at' => Carbon::now(),
-                            ]);
+                            $node->delete();
 
                             continue;
                         }
                     } else {
-                        $node->update([
-                            'speed' => 0,
-                            'status' => 'OFFLINE',
-                            'synced_at' => Carbon::now(),
-                        ]);
+                        $node->delete();
+
+                        continue;
                     }
 
                     unset($json);
                 }
 
-                // Connection failed, so log it
-                $node->update([
-                    'status' => 'OFFLINE',
-                    'synced_at' => Carbon::now(),
-                ]);
+                // Connection failed, so remove it
+                $node->delete();
 
                 unset($response);
             }
