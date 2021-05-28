@@ -78,6 +78,12 @@ class Node extends Model
             return false;
         }
 
+        if ($result->syncState != 'PERSIST_FINISHED') {
+            $this->delete();
+
+            return false;
+        }
+
         $this->update([
             'status' => $result->syncState,
             'version' => $result->version,
