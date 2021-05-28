@@ -65,12 +65,16 @@ class Node extends Model
         $result = $json->result;
 
         if (empty($result->uptime)) {
-             return false;
+            $this->delete();
+
+            return false;
         }
 
         $speed = ($result->relayMessageCount / $result->uptime) * 3600;
 
         if (empty($speed)) {
+            $this->delete();
+
             return false;
         }
 
