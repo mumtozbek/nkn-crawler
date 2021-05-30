@@ -72,18 +72,6 @@ class Node extends Model
 
         $speed = ($result->relayMessageCount / $result->uptime) * 3600;
 
-        if (empty($speed)) {
-            $this->delete();
-
-            return false;
-        }
-
-        if ($result->syncState != 'PERSIST_FINISHED') {
-            $this->delete();
-
-            return false;
-        }
-
         $this->update([
             'status' => $result->syncState,
             'version' => $result->version,
