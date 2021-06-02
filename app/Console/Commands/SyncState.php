@@ -54,22 +54,11 @@ class SyncState extends Command
                             $node->index($json);
 
                             continue;
-                        } elseif (!empty($json->error)) {
-                            $node->delete();
-
-                            continue;
                         }
-                    } else {
-                        $node->delete();
-
-                        continue;
                     }
 
                     unset($json);
                 }
-
-                // Connection failed, so remove it
-                $node->delete();
 
                 unset($response);
             }

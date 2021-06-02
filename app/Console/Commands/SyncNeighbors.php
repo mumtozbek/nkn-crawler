@@ -63,30 +63,16 @@ class SyncNeighbors extends Command
 
             if (!empty($json->result)) {
                 foreach ($json->result as $jsonNode) {
-                    if ($jsonNode->syncState != 'PERSIST_FINISHED') {
-                        continue;
-                    }
-
                     $addr = $this->extractHost($jsonNode->addr);
                     $childNode = Node::where('host', $addr);
 
                     if ($childNode->exists()) {
-                        if ($jsonNode->syncState != 'PERSIST_FINISHED') {
-                            $childNode->delete();
-
-                            continue;
-                        }
-
                         $childNode->update([
                             'height' => $jsonNode->height,
                             'status' => $jsonNode->syncState,
                             'ping' => $jsonNode->roundTripTime,
                         ]);
                     } elseif (empty($childNode->height) || empty($childNode->status) || empty($childNode->ping)) {
-                        if ($jsonNode->syncState != 'PERSIST_FINISHED') {
-                            continue;
-                        }
-
                         Node::create([
                             'seed_id' => $jsonNode->id,
                             'host' => $addr,
